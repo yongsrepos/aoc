@@ -1,8 +1,9 @@
+import utils.IoHelper
 import java.lang.IllegalArgumentException
 
 class D01 {
     private fun getInputs(): List<Int> {
-        return utils.getInts(this, "d01.in")
+        return IoHelper().getInts("d01.in")
     }
 
     private fun getPair(): Pair<Int, Int> {

@@ -7,10 +7,10 @@ internal class IosKtTest {
 
     @Test
     fun getLines() {
-        val lines = getLines(IosKtTest(), "inputs_test.txt")
+        val lines = IoHelper().getInts("inputs_test.txt")
 
         assertThat(lines).hasSize(2)
-        assertThat(lines).contains("1")
-        assertThat(lines).contains("2")
+        assertThat(lines).contains(1)
+        assertThat(lines).contains(2)
     }
 }
