@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.20'
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = "5.7.0"
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+}
+

@@ -1,0 +1,23 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = "5.7.0"
+}
+
+dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    testCompile("org.junit.jupiter:junit-jupiter:$junitVersion")
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
+
+}
+
+test {
+    useJUnitPlatform()
+}

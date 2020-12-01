@@ -1,0 +1,5 @@
+# Project exclude paths
+/.gradle/
+/aoc2020/build/
+/build/
+/out/
