@@ -1,6 +1,7 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
     id 'java'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.20'
 }
 
 repositories {
@@ -13,6 +14,8 @@ ext {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1'
+
     testCompile("org.junit.jupiter:junit-jupiter:$junitVersion")
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
 

@@ -3,9 +3,7 @@ import kotlin.math.ceil
 
 class D03 {
     fun getSolution1(): Int {
-        return getInputs()
-            .mapIndexed { index, s -> getCharAtSlope(s, getZeroBasedX(index, 3 to 1)) }
-            .count { it == '#' }
+        return getCount(3 to 1).toInt()
     }
 
     fun getSolution2(): Long {
