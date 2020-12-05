@@ -6,15 +6,15 @@ import java.util.function.Predicate
 class D04 {
 
     fun getSolution1(): Int {
-        return getValidPassports { isValidPassportIgnoringCid(it) }.size
+        return getValidPassports { isValidPassportIgnoringCid(it) }
     }
 
     fun getSolution2(): Int {
-        return getValidPassports { isValidPassportIgnoringCid(it) && isMeetingExtraRequirement(it) }.size
+        return getValidPassports { isValidPassportIgnoringCid(it) && isMeetingExtraRequirement(it) }
     }
 
-    private fun getValidPassports(filter: Predicate<Passport>): List<Passport> {
-        return getParsedPassports().filter { filter.test(it) }
+    private fun getValidPassports(filter: Predicate<Passport>): Int {
+        return getParsedPassports().count { filter.test(it) }
     }
 
     private fun getParsedPassports(): List<Passport> {
@@ -23,8 +23,7 @@ class D04 {
 
     private fun parseRawPassport(rawPassport: String): Passport {
         val pairs = rawPassport.split("\n")
-            .map { it.split(" ") }
-            .flatten()
+            .flatMap { it.split(" ") }
             .map {
                 val pair = it.split(":")
                 pair[0] to pair[1]
@@ -60,7 +59,7 @@ class D04 {
     private fun isMeetingExtraRequirement(passport: Passport): Boolean {
         val isHeightInCm = ("^(1[5-9][0-9]cm)$".toRegex().matches(passport.hgt!!)
                 && passport.hgt.split("cm")[0].toInt() in 150..193)
-        val isHeightInIn = ("^([5-7][0-9]in)$".toRegex().matches(passport.hgt!!)
+        val isHeightInIn = ("^([5-7][0-9]in)$".toRegex().matches(passport.hgt)
                 && passport.hgt.split("in")[0].toInt() in 59..76)
         val isHeightValid = isHeightInCm || isHeightInIn
 
