@@ -2,12 +2,12 @@ import utils.IoHelper
 
 class D07 {
     fun getSolution1(): Int {
-        val allBags = getInputs()
-        val root = Node("root", mutableListOf())
-        getEmptyBags().forEach { getAllOuterBagNames(root, it, allBags) }
-        val allParents = mutableSetOf<Node>()
-        getMyOuterBags(root, "shiny gold bag", allParents)
-        return allParents.size
+        val bagCompositions = getInputs()
+        val virtualRoot = Node("root", mutableListOf())
+        getEmptyBags().forEach { buildTree(virtualRoot, it, bagCompositions) }
+        val allLevelsOuterNodes = mutableSetOf<Node>()
+        getAllLevelsOuterNodes(virtualRoot, "shiny gold bag", allLevelsOuterNodes)
+        return allLevelsOuterNodes.size
     }
 
     fun getSolution2(): Int {
@@ -16,50 +16,69 @@ class D07 {
         return counts.sum() - 1
     }
 
+    fun getSolution1Alt(): Int {
+        val bagCompositions = getInputs()
+        val allOuterBagNames = mutableSetOf<String>()
+        var currentOuterBagNames = bagCompositions.filter { "shiny gold bag" in it.value }.map { it.key }.toMutableSet()
+
+        while (currentOuterBagNames.isNotEmpty()) {
+            var newLayerOuterBagNames = mutableSetOf<String>()
+
+            for (outerName in currentOuterBagNames) {
+                allOuterBagNames.add(outerName)
+
+                newLayerOuterBagNames = bagCompositions.filter { outerName in it.value }.map { it.key }.toMutableSet()
+                    .union(newLayerOuterBagNames) as MutableSet<String>
+            }
+
+            currentOuterBagNames = newLayerOuterBagNames
+        }
+        return allOuterBagNames.size
+    }
+
     private fun getCount(
         bagName: String,
         myCount: Int,
-        allBags: Map<String, Map<String, Int>>,
+        bagCompositions: Map<String, Map<String, Int>>,
         counts: MutableList<Int>
     ) {
         counts.add(myCount)
-        if (allBags[bagName].orEmpty().isEmpty()) {
+        if (bagCompositions[bagName].orEmpty().isEmpty()) {
             return
         }
 
-        for (it in allBags[bagName].orEmpty()) {
-            getCount(it.key, it.value * myCount, allBags, counts)
+        for (it in bagCompositions[bagName].orEmpty()) {
+            getCount(it.key, it.value * myCount, bagCompositions, counts)
         }
     }
 
-    private fun getAllParents(root: Node, parentNodes: MutableSet<Node>) {
-        for (node in root.outerBags) {
-            parentNodes.add(node)
-            getAllParents(node, parentNodes)
-        }
-    }
-
-    private fun getMyOuterBags(root: Node, expectedBagName: String, parentNodes: MutableSet<Node>) {
-        for (it in root.outerBags) {
-            if (it.name == expectedBagName) {
-                getAllParents(it, parentNodes)
+    private fun getAllLevelsOuterNodes(startingNode: Node, startingBagName: String, outerNodes: MutableSet<Node>) {
+        for (it in startingNode.outerBags) {
+            if (it.name == startingBagName) {
+                getAllLevelsOuterNodes(it, outerNodes)
                 return
             }
-            getMyOuterBags(it, expectedBagName, parentNodes)
+            getAllLevelsOuterNodes(it, startingBagName, outerNodes)
         }
     }
 
-    private fun getAllOuterBagNames(parentNode: Node, bagName: String, allBags: Map<String, Map<String, Int>>) {
-        val myNode = Node(bagName, mutableListOf())
-        parentNode.outerBags.add(myNode)
-        val outerBagNames = getOuterBagNames(bagName, allBags)
-        for (outerBagName in outerBagNames) {
-            getAllOuterBagNames(myNode, outerBagName, allBags)
+    private fun getAllLevelsOuterNodes(startingNode: Node, outerNodes: MutableSet<Node>) {
+        for (node in startingNode.outerBags) {
+            outerNodes.add(node)
+            getAllLevelsOuterNodes(node, outerNodes)
         }
     }
 
-    private fun getOuterBagNames(bagName: String, allBags: Map<String, Map<String, Int>>): List<String> {
-        return allBags.filter { bagName in it.value }.map { it.key }
+    private fun buildTree(innerBagNode: Node, currentBagName: String, bagCompositions: Map<String, Map<String, Int>>) {
+        val currentNode = Node(currentBagName, mutableListOf())
+        innerBagNode.outerBags.add(currentNode)
+        for (outerBagName in getOuterBagNames(currentBagName, bagCompositions)) {
+            buildTree(currentNode, outerBagName, bagCompositions)
+        }
+    }
+
+    private fun getOuterBagNames(currentBagName: String, bagCompositions: Map<String, Map<String, Int>>): List<String> {
+        return bagCompositions.filter { currentBagName in it.value }.map { it.key }
     }
 
     private fun getEmptyBags(): List<String> {
@@ -82,3 +101,7 @@ class D07 {
 data class Bag(val name: String, val innerBags: Map<String, Int>)
 
 data class Node(val name: String, val outerBags: MutableList<Node>)
+
+fun main() {
+    D07().getSolution1Alt()
+}
