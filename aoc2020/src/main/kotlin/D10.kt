@@ -44,13 +44,10 @@ class D10 {
     }
 
     private fun getOccurrences(wholeStr: String, subStr: String): Int {
-        return wholeStr.windowed(subStr.length) { if (it == subStr) 1 else 0 }.sum()
+        return wholeStr.windowed(subStr.length).count { it == subStr }
     }
-
 
     private fun getInputs(): MutableList<Int> {
         return IoHelper().getInts("d10.in").sorted().toMutableList()
     }
 }
-
-

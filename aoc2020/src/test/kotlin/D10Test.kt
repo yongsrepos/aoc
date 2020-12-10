@@ -7,7 +7,7 @@ internal class D10Test {
 
     @Test
     fun getSolution1() {
-        assertThat(D10().getSolution1()).isEqualTo(1)
+        assertThat(D10().getSolution1()).isEqualTo(2475)
     }
 
     @Test
