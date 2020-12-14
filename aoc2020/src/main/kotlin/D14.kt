@@ -60,26 +60,25 @@ fun Int.applyMaskMode2(mask: String): Set<Long> {
             }
         }
     }
-    val result = mutableSetOf<Long>()
-    genSubsets(floatingPositions).forEach { floatingPositionChoiceSet ->
+    val binaryStringsAfterReplacingFloatingPosition = mutableSetOf<Long>()
+    genSubsets(floatingPositions).forEach { chosenFloatingPositions ->
         run {
-            val copyOf = binaryWithPadding.copyOf()
-            floatingPositionChoiceSet.forEach { copyOf[it] = '1' }
-            result.add(copyOf.joinToString("").replace('X', '0').toLong(2))
+            val copyOfOriginalBinaryString = binaryWithPadding.copyOf()
+            chosenFloatingPositions.forEach { copyOfOriginalBinaryString[it] = '1' }
+            binaryStringsAfterReplacingFloatingPosition.add(
+                copyOfOriginalBinaryString.joinToString("").replace('X', '0').toLong(2)
+            )
         }
     }
 
-    return result.toSet()
+    return binaryStringsAfterReplacingFloatingPosition.toSet()
 }
 
-fun genSubsets(sorted: List<Int>): MutableSet<MutableSet<Int>> {
-    var subsets = mutableSetOf<MutableSet<Int>>()
-    for (i in 0 until 2.0.pow(sorted.size).toInt()) {
-        val binaryI = i.toString(2).padStart(sorted.size, '0')
-        var subset = mutableSetOf<Int>()
-        binaryI.forEachIndexed { idx, cha ->
-            if (cha == '1') subset.add(sorted[sorted.size - (idx + 1)])
-        }
+fun genSubsets(elements: List<Int>): MutableSet<Set<Int>> {
+    var subsets = mutableSetOf<Set<Int>>()
+    for (i in 0 until 2.0.pow(elements.size).toInt()) {
+        val binaryI = i.toString(2).padStart(elements.size, '0')
+        val subset = binaryI.mapIndexed { idx, cha -> if (cha == '1') elements[idx] else null }.filterNotNull().toSet()
         subsets.add(subset)
     }
     return subsets
