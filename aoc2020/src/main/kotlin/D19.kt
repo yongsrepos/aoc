@@ -5,7 +5,7 @@ class D19 {
     private val unresolved = mutableMapOf<Int, List<List<Int>>>()
     fun getSolution1(): Int {
         IoHelper().getSections("d1901.in", "\n\n")[0].lines().map { parse(it.trim()) }
-        tryResolve { unresolved.isNotEmpty() }
+        tryResolve { 0 !in resolved }
         return IoHelper().getSections("d1901.in", "\n\n")[1].lines().count { it.trim() in resolved[0]!! }
     }
 
@@ -20,7 +20,7 @@ class D19 {
             for (toSolve in unresolved.toMutableMap()) {
                 var isMessageResolvable = true
                 for (ruleIndexes in toSolve.value) {
-                    if (ruleIndexes.any { it !in resolved }) {
+                    if (ruleIndexes.any { it !in resolved.keys }) {
                         isMessageResolvable = false
                         break
                     }
