@@ -52,179 +52,43 @@ class D23 {
         return 0
     }
 
-    fun getSolution2V2(): Int {
-        val p = false
-        val pr = true
-
-        val totalElements = 1000000
-        var cups = "389125467".map { it.toString().toInt() }.toMutableList()
-        for (i in 10..totalElements) {
-            cups.add(i)
-        }
-        val minCup = 1
-        var currentCup = cups.first()
-        var maxCupInRemaining = totalElements
-        var round = 1
-        val maxRound = 10 * totalElements
-        println("Init done!")
-
-        val copyRound = (totalElements - 6) / 4
-        while (round <= 4) {
-            if (round > 10000 && round % 10000 == 0 && pr) {
-                println("round: $round")
-            }
-
-            if (round == 4) {
-                var cupsCopy = cups.toMutableList()
-                for (i in 0 until copyRound) {
-                    val idxInCups = 6 + 4 * i
-                    cupsCopy[6 + i] = cups[idxInCups]
-                    cupsCopy[5 + copyRound + i * 3 + 1] = cups[idxInCups + 1]
-                    cupsCopy[5 + copyRound + i * 3 + 2] = cups[idxInCups + 2]
-                    cupsCopy[5 + copyRound + i * 3 + 3] = cups[idxInCups + 3]
-                    currentCup = cups[idxInCups]
-                    round++
-                }
-                cups = cupsCopy
-                println("Copy done!")
-                break
-            }
-
-            // prepare for next round
-            val currentCupIdx = cups.indexOf(currentCup)
-            val pickupsIndexes = listOf(
-                (currentCupIdx + 1) % cups.size,
-                (currentCupIdx + 2) % cups.size,
-                (currentCupIdx + 3) % cups.size
-            )
-
-            var pickups = pickupsIndexes.map { cups[it] }
-            if (p && round > 3) {
-                println("round:$round")
-                println("currentValue:$currentCup")
-                println(cups)
-                println(pickups)
-            }
-
-            pickups.forEach { cups.remove(it) }
-            while (maxCupInRemaining in pickups) {
-                maxCupInRemaining -= 1
-            }
-
-            var destinationValue = currentCup - 1
-            if (destinationValue < minCup) {
-                destinationValue = maxCupInRemaining
-            }
-            while (destinationValue in pickups) {
-                destinationValue--
-                if (destinationValue < minCup) {
-                    destinationValue = maxCupInRemaining
-                }
-            }
-
-            if (p) {
-                println("$destinationValue")
-                println()
-            }
-
-            val destinationCupIdx = cups.indexOf(destinationValue)
-            cups.addAll(destinationCupIdx + 1, pickups)
-            currentCup = cups[(cups.indexOf(currentCup) + 1) % cups.size]
-
-            round++
-        }
-
-        // start with linked list
-        /*
-        val head = Node2(null, cups.first(), null)
-        var tail = head
-        var currentCupNode = head
-        for (i in 1 until cups.size) {
-            val newNode = Node2(tail, cups[i], null)
-            tail.next = newNode
-            tail = newNode
-            if (tail.value == currentCup) {
-                currentCupNode = newNode
-            }
-        }
-        tail.next = head
-        head.previous = tail
-
-        while (round <= maxRound) {
-            if (round > 10000 && round % 10000 == 0 && pr) {
-                println("round: $round")
-            }
-
-            var p1 = currentCupNode.next!!
-            var p2 = p1.next!!
-            var p3 = p2.next!!
-
-            currentCupNode.next = p3.next!!
-            var pickups = listOf(p1, p2, p3)
-            while (maxCupInRemaining in pickups) {
-                maxCupInRemaining -= 1
-            }
-
-            var destinationValue = currentCup - 1
-            if (destinationValue < minCup) {
-                destinationValue = maxCupInRemaining
-            }
-            while (destinationValue in pickups) {
-                destinationValue--
-                if (destinationValue < minCup) {
-                    destinationValue = maxCupInRemaining
-                }
-            }
-
-            val destinationNode = findNode(head, destinationValue)
-            p3.next = destinationNode.next
-            destinationNode.next = p1
-            currentCupNode = currentCupNode.next!!
-
-            round++
-
-            if (round == maxRound + 1) {
-                val splits = cups.joinToString("").split("1")
-                val r = if (splits.size == 1) splits[0] else splits[1] + splits[0]
-                println("final: $r")
-            }
-
-        }*/
-
-        return 0
-    }
-
     fun getSolution2V3(): Int {
-        val p = false
-        val pr = true
-
-        //val totalElements = 9
-        var cups = "389125467".map { it.toString().toInt() }.toMutableList()
+        // The correct solution!
+        val totalElements = 1000000
+        var cups = "614752839".map { it.toString().toInt() }.toMutableList()
+        var valueToNode = mutableMapOf<Int, Node2>()
         // start with linked list
         val head = Node2(cups.first(), null)
+        valueToNode[cups.first()] = head
+
         var tail = head
         var currentCupNode = head
         for (i in 1 until cups.size) {
             val newNode = Node2(cups[i], null)
             tail.next = newNode
             tail = newNode
+            valueToNode[newNode.value] = newNode
         }
-        /*
+
         for (i in 10..totalElements) {
-            val newNode = Node2(tail, i, null)
+            val newNode = Node2(i, null)
             tail.next = newNode
             tail = newNode
+            valueToNode[newNode.value] = newNode
         }
-         */
 
         val minCup = 1
         var round = 1
-        //val maxRound = 10 * totalElements
+        val maxRound = 10 * totalElements
         tail.next = head
 
-        while (round <= 100) {
-            println(printLinkedList(head))
-            var maxCupInRemaining = 9
+        while (round <= maxRound) {
+            // println(printLinkedList(head))
+            /*
+        if (round > 10000 && round % 10000 == 0) {
+            println("round: $round")
+        }*/
+            var maxCupInRemaining = totalElements
             var p1 = currentCupNode.next!!
             var p2 = p1.next!!
             var p3 = p2.next!!
@@ -247,54 +111,26 @@ class D23 {
                 }
             }
 
-            println("current: ${currentCupNode.value}")
-            println("pickups, $pickups")
-            println("destinationValue: $destinationValue")
-            println()
-
-
-            val destinationNode = findNode(head, destinationValue)
+            val destinationNode = findNode(valueToNode, destinationValue)
             p3.next = destinationNode.next
             destinationNode.next = p1
 
             currentCupNode = currentCupNode.next!!
             round++
-
-            if (round == 100 + 1) {
-                val splits = printLinkedList(head).split("1")
-                val r = if (splits.size == 1) splits[0] else splits[1] + splits[0]
-                println("final: $r")
-            }
         }
+
+        val a = valueToNode[1]!!.next!!
+        val b = a.next!!
+        val result = a.value.toLong() * b.value
+
+        println("final: a: ${a.value}, b:${b.value}")
+        println(result)
 
         return 0
     }
 
-    private fun printLinkedList(head: Node2): String {
-        var r = ""
-        var node: Node2? = head
-        val headValue = head.value
-
-        while (node != null) {
-            r = r.plus(node.value.toString()).plus(",")
-            node = node.next
-            if (node?.value == headValue) {
-                return r
-            }
-        }
-        return r
-    }
-
-    private fun findNode(head: Node2, value: Int): Node2 {
-        var node = head
-        while (node.value != value) {
-            node = node.next!!
-        }
-        if (node.value == value) {
-            return node
-        }
-
-        throw IllegalStateException("Not found $value")
+    private fun findNode(head: MutableMap<Int, Node2>, value: Int): Node2 {
+        return head[value]!!
     }
 
     fun getSolution2(): Int {
