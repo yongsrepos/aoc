@@ -9,7 +9,7 @@ class D24 {
         var floor = getInitFloor()
 
         var r = 1
-        repeat(100){
+        repeat(100) {
             var floorWithTilesToCheck = mutableMapOf<Pair<Int, Int>, TileD24>()
             for (posAndTile in floor) {
                 floorWithTilesToCheck[posAndTile.key] = posAndTile.value
@@ -20,9 +20,10 @@ class D24 {
                 }
             }
 
-            var floorSnapshot = floorWithTilesToCheck.map { it.key to TileD24(it.value.x, it.value.y, it.value.color) }.toMap()
-            for(tileToCheck in floorWithTilesToCheck.values) {
-                if(tileToCheck.shouldFlip(floorSnapshot)){
+            var floorSnapshot =
+                floorWithTilesToCheck.map { it.key to TileD24(it.value.x, it.value.y, it.value.color) }.toMap()
+            for (tileToCheck in floorWithTilesToCheck.values) {
+                if (tileToCheck.shouldFlip(floorSnapshot)) {
                     tileToCheck.flip()
                 }
             }
@@ -133,8 +134,4 @@ enum class DirectionD24 {
 
 enum class Color {
     B, W
-}
-
-fun main() {
-    D24().getSolution2()
 }
