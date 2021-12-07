@@ -38,10 +38,6 @@ class Fish(
                 if (childBirthday < day) Fish(childBirthday, 8, true, memory) else null
             }
     }
-
-    override fun toString(): String {
-        return "Fish(birthDay=$birthDay, internalTimer=$internalTimer, dayAndCount=$memory)"
-    }
 }
 
 fun main() {
