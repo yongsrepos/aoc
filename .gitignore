@@ -4,6 +4,7 @@
 /aoc2020/out/
 /build/
 /out/
+bin/
 /gradlew
 /.idea/qaplug_profiles.xml
 /gradlew.bat
@@ -25,3 +26,4 @@
 /.idea/codeStyles/codeStyleConfig.xml
 /.idea/
 build/
+.DS_Store
